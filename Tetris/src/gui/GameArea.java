@@ -2,12 +2,14 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 import api.TetrisBlock;
+import tetrisBlocks.*;
 
 public class GameArea extends JPanel {
 
@@ -17,6 +19,7 @@ public class GameArea extends JPanel {
     private Color[][] background;
 
     private TetrisBlock block;
+    private TetrisBlock[] blocks;
 
     public GameArea(int columns) {
         setBounds(250, 15, 400, 680);
@@ -28,18 +31,31 @@ public class GameArea extends JPanel {
         gridRows = this.getBounds().height / gridCellSize;
 
         background = new Color[gridRows][gridColumns];
-        // background[3][0] = Color.green;
+        blocks = new TetrisBlock[]{new IShape(),
+                                   new JShape(),
+                                   new LShape(),
+                                   new OShape(),
+                                   new SShape(),
+                                   new TShape(),
+                                   new ZShape()};
     }
 
     public void spawnBlock() {
-        block = new TetrisBlock(new int[][] { { 1, 0 }, { 1, 0 }, { 1, 1 } }, Color.GREEN);
+        Random random = new Random();
+        block = blocks[random.nextInt(blocks.length)];
         block.Spawn(gridColumns);
+    }
+
+    public boolean isBlockOutOfBound(){
+        if(block.getY()<0){
+            block = null;
+            return true;
+        }
+        return false;
     }
 
     public boolean MoveBlockDown() {
         if (!checkBottom()) {
-            setBlockToBackground();
-            clearLines();
             return false;
         }
         block.moveDown();
@@ -48,6 +64,9 @@ public class GameArea extends JPanel {
     }
 
     public void MoveBlockLeft() {
+        if(block==null){
+            return;
+        }
         if (!checkLeft()) {
             return;
         }
@@ -56,6 +75,9 @@ public class GameArea extends JPanel {
     }
 
     public void MoveBlockRight() {
+        if(block==null){
+            return;
+        }
         if (!checkRight()) {
             return;
         }
@@ -64,6 +86,9 @@ public class GameArea extends JPanel {
     }
 
     public void MoveBlockQuick() {
+        if(block==null){
+            return;
+        }
         if (checkBottom()) {
             block.moveDown();
             repaint();
@@ -71,7 +96,20 @@ public class GameArea extends JPanel {
     }
 
     public void rotationBock() {
-        block.rotateBlock(gridRows, gridColumns);
+        if(block==null){
+            return;
+        }
+        block.rotateBlock();
+        if(block.getLeftSide()<0){
+            block.setX(0);
+        }
+        if(block.getRightSide() >= gridColumns){
+            block.setX(gridColumns-block.getWidth());
+        }
+        if(block.getBottomEdge() >= gridRows){
+            block.setY(gridRows - block.getHeight());
+        }
+
         repaint();
     }
 
@@ -141,8 +179,10 @@ public class GameArea extends JPanel {
         return true;
     }
 
-    public void clearLines() {
+    public int clearLines() {
         boolean checkLines;
+        int lineCleared = 0;
+        int scoreGet = 0;
         for (int row = gridRows - 1; row >= 0; row--) {
             checkLines = false;
             for (int col = 0; col < gridColumns; col++) {
@@ -152,14 +192,27 @@ public class GameArea extends JPanel {
                 }
             }
             if (!checkLines) {
+                lineCleared ++;
                 clearLine(row);
                 shiftDown(row);
                 clearLine(0);
                 row++;
                 repaint();
             }
-
+            scoreGet = ScorePoint(lineCleared);
         }
+        return scoreGet;
+    }
+    private int ScorePoint(int line){
+        int scoreGet = 0;
+        if(line == 1){
+            scoreGet = 100;
+        }else if(line ==2){
+            scoreGet = 300;
+        }else if(line == 3){
+            scoreGet = 500;
+        }
+        return scoreGet;
     }
 
     private void clearLine(int row) {
@@ -176,7 +229,7 @@ public class GameArea extends JPanel {
         }
     }
 
-    private void setBlockToBackground() {
+    public void setBlockToBackground() {
         int[][] shape = block.getShape();
         int h = block.getHeight();
         int w = block.getWidth();
@@ -245,6 +298,9 @@ public class GameArea extends JPanel {
         super.paintComponent(g);
 
         drawBackground(g);
+        if (block == null) {
+            spawnBlock();
+        }
         for (int row = 0; row < gridRows; row++) {
             for (int col = 0; col < gridColumns; col++) {
                 g.drawRect(col * gridCellSize, row * gridCellSize, gridCellSize, gridCellSize);

@@ -1,6 +1,7 @@
 package api;
 
 import java.awt.Color;
+import java.util.Random;
 
 public class TetrisBlock {
     private int[][] shape;
@@ -10,17 +11,20 @@ public class TetrisBlock {
     private int[][][] shapes;
     private int currentRotation;
 
-    public TetrisBlock(int[][] shape, Color color) {
+    private Color[] blockClolor = {Color.RED, Color.YELLOW, Color.BLUE, Color.green};
+
+    public TetrisBlock(int[][] shape) {
         this.shape = shape;
-        this.color = color;
         initShape();
     }
 
     public void Spawn(int gridWidth) {
-        currentRotation = 0;
+        Random random = new Random();
+        currentRotation = random.nextInt(shapes.length);
         shape = shapes[currentRotation];
         y = -getHeight();
-        x = (gridWidth - getWidth()) / 2;
+        x = random.nextInt(gridWidth - getWidth());
+        color = blockClolor[random.nextInt(blockClolor.length)];
     }
 
     public void initShape() {
@@ -57,6 +61,12 @@ public class TetrisBlock {
     public int getX() {
         return x;
     }
+    public void setX(int newX){
+        x = newX;
+    }
+    public void setY(int newY){
+        y = newY;
+    }
 
     public int getY() {
         return y;
@@ -86,27 +96,12 @@ public class TetrisBlock {
         return x + getWidth();
     }
 
-    public void rotateBlock(int gridRows, int gridColumns) {
+    public void rotateBlock() {
         currentRotation++;
         if (currentRotation > 3) {
             currentRotation = 0;
         }
-
-        // Get the shape of the next rotation
-        int[][] nextShape = shapes[currentRotation];
-
-        // Calculate the dimensions of the next shape
-        int nextWidth = nextShape[0].length;
-        int nextHeight = nextShape.length;
-
-        // Calculate the position of the next rotation
-        int nextX = x;
-        int nextY = y;
-
-        // Check if the next rotation is within the bounds of the panel
-        if (nextX >= 0 && nextX + nextWidth <= gridColumns && nextY >= 0 && nextY + nextHeight <= gridRows) {
-            shape = shapes[currentRotation];
-        }
+        shape = shapes[currentRotation];
     }
     
 }
