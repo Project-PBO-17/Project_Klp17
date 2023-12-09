@@ -103,5 +103,16 @@ public class TetrisBlock {
         }
         shape = shapes[currentRotation];
     }
+    public int[][] getRotatedShape() {
+        int[][] rotatedShape = new int[getWidth()][getHeight()];
+
+        for (int row = 0; row < getHeight(); row++) {
+            for (int col = 0; col < getWidth(); col++) {
+                rotatedShape[col][getHeight() - 1 - row] = shape[row][col];
+            }
+        }
+
+        return rotatedShape;
+    }
     
 }
