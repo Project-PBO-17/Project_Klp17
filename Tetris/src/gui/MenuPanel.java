@@ -15,6 +15,7 @@ public class MenuPanel extends JPanel{
     private JButton exitButton, restartButton, pauseButton;
     public MenuPanel(){
         menu = new JLabel("MENU");
+        menu.setForeground(Color.white);
         menu.setPreferredSize(new Dimension(170,30));
         menu.setFont(new Font("Poppins", Font.BOLD, 25));
 
@@ -38,7 +39,7 @@ public class MenuPanel extends JPanel{
 
         setLayout(new FlowLayout());
         setBounds(25, 10, 200, 160);
-        setBorder(new LineBorder(Color.BLACK));
+        setBorder(new LineBorder(Color.WHITE));
         add(menu);
         add(restartButton);
         add(pauseButton);

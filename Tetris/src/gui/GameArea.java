@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
@@ -20,34 +21,63 @@ public class GameArea extends JPanel {
 
     private TetrisBlock block;
     private TetrisBlock[] blocks;
+    private NextBlockPanel nextBlockPanel;
+    private TetrisBlock lastSpawnedBlock, newBlock;
+    private ArrayList<TetrisBlock> arrayTet = new ArrayList<>();
+    private boolean activeBlock = true;
 
     public GameArea(int columns) {
-        setBounds(250, 15, 400, 680);
-        setBackground(Color.decode("#e6e7ed"));
-        setBorder(new LineBorder(Color.BLACK, 2));
+        setBounds(245, 15, 400, 680);
+        // setBackground(Color.decode("#e6e7ed"));
+        setBackground(Color.black);
+        setBorder(new LineBorder(Color.white, 6));
 
         gridColumns = columns;
         gridCellSize = this.getBounds().width / gridColumns;
         gridRows = this.getBounds().height / gridCellSize;
 
         background = new Color[gridRows][gridColumns];
-        blocks = new TetrisBlock[]{new IShape(),
-                                   new JShape(),
-                                   new LShape(),
-                                   new OShape(),
-                                   new SShape(),
-                                   new TShape(),
-                                   new ZShape()};
+        blocks = new TetrisBlock[] { new IShape(),
+                new JShape(),
+                new LShape(),
+                new OShape(),
+                new SShape(),
+                new TShape(),
+                new ZShape() };
+    }
+
+    public int getGridCellSize() {
+        return gridCellSize;
+    }
+
+    public void setNextBlockPanel(NextBlockPanel nextBlockPanel) {
+        this.nextBlockPanel = nextBlockPanel;
+    }
+
+    public TetrisBlock getBlock() {
+        return lastSpawnedBlock;
+    }
+
+    public void setBlock(TetrisBlock block) {
+        lastSpawnedBlock = block;
     }
 
     public void spawnBlock() {
         Random random = new Random();
-        block = blocks[random.nextInt(blocks.length)];
+        if (arrayTet.isEmpty()) {
+            arrayTet.add(blocks[random.nextInt(blocks.length)]);
+            arrayTet.add(blocks[random.nextInt(blocks.length)]);
+        }
+        newBlock = arrayTet.get(1);
+        lastSpawnedBlock = arrayTet.get(0);
+        nextBlockPanel.setNextBlock(newBlock);
+
+        block = getBlock();
         block.Spawn(gridColumns);
     }
 
-    public boolean isBlockOutOfBound(){
-        if(block.getY()<0){
+    public boolean isBlockOutOfBound() {
+        if (block.getY() < 0) {
             block = null;
             return true;
         }
@@ -55,7 +85,13 @@ public class GameArea extends JPanel {
     }
 
     public boolean MoveBlockDown() {
+        Random random = new Random();
         if (!checkBottom()) {
+            arrayTet.remove(0);
+            setBlock(newBlock);
+            arrayTet.add(blocks[random.nextInt(blocks.length)]);
+            nextBlockPanel.setNextBlock(arrayTet.get(1));
+
             return false;
         }
         block.moveDown();
@@ -64,7 +100,7 @@ public class GameArea extends JPanel {
     }
 
     public void MoveBlockLeft() {
-        if(block==null){
+        if (block == null) {
             return;
         }
         if (!checkLeft()) {
@@ -75,7 +111,7 @@ public class GameArea extends JPanel {
     }
 
     public void MoveBlockRight() {
-        if(block==null){
+        if (block == null) {
             return;
         }
         if (!checkRight()) {
@@ -86,7 +122,7 @@ public class GameArea extends JPanel {
     }
 
     public void MoveBlockQuick() {
-        if(block==null){
+        if (block == null) {
             return;
         }
         if (checkBottom()) {
@@ -96,24 +132,68 @@ public class GameArea extends JPanel {
     }
 
     public void rotationBock() {
-        if(block==null){
+        if (block == null) {
             return;
         }
         block.rotateBlock();
-        if(block.getLeftSide()<0){
+        /*
+         * if (!checkRotation()) {
+         * return;
+         * }
+         */
+        if (block.getLeftSide() < 0) {
             block.setX(0);
         }
-        if(block.getRightSide() >= gridColumns){
-            block.setX(gridColumns-block.getWidth());
+        if (block.getRightSide() >= gridColumns) {
+            block.setX(gridColumns - block.getWidth());
         }
-        if(block.getBottomEdge() >= gridRows){
+        if (block.getBottomEdge() >= gridRows) {
             block.setY(gridRows - block.getHeight());
         }
 
         repaint();
     }
 
+    /*
+     * private boolean checkRotation() {
+     * int[][] shape = block.getShape();
+     * int h = block.getHeight();
+     * int w = block.getWidth();
+     * 
+     * for (int row = 0; row < h; row++) {
+     * for (int col = 0; col < w; col++) {
+     * if (shape[row][col] != 0) {
+     * int x = col + block.getX();
+     * int y = row + block.getY();
+     * 
+     * // Pengecekan khusus untuk blok panjang (Ishape)
+     * if (block instanceof IShape && col == 1) {
+     * int leftX = x - 1;
+     * int rightX = x + 1;
+     * 
+     * // Cek apakah rotasi akan menabrak sel yang sudah terisi
+     * if (leftX >= 0 && background[y][leftX] != null) {
+     * return false;
+     * }
+     * if (rightX < gridColumns && background[y][rightX] != null) {
+     * return false;
+     * }
+     * }
+     * 
+     * // Pengecekan umum untuk sel lainnya
+     * if (x < 0 || x >= gridColumns || y < 0 || y >= gridRows || background[y][x]
+     * != null) {
+     * return false;
+     * }
+     * }
+     * }
+     * }
+     * return true;
+     * }
+     */
+
     private boolean checkBottom() {
+        Random random = new Random();
         if (block.getBottomEdge() == gridRows) {
             return false;
         }
@@ -192,7 +272,7 @@ public class GameArea extends JPanel {
                 }
             }
             if (!checkLines) {
-                lineCleared ++;
+                lineCleared++;
                 clearLine(row);
                 shiftDown(row);
                 clearLine(0);
@@ -203,13 +283,14 @@ public class GameArea extends JPanel {
         }
         return scoreGet;
     }
-    private int ScorePoint(int line){
+
+    private int ScorePoint(int line) {
         int scoreGet = 0;
-        if(line == 1){
+        if (line == 1) {
             scoreGet = 100;
-        }else if(line ==2){
+        } else if (line == 2) {
             scoreGet = 300;
-        }else if(line == 3){
+        } else if (line == 3) {
             scoreGet = 500;
         }
         return scoreGet;
@@ -222,9 +303,9 @@ public class GameArea extends JPanel {
     }
 
     private void shiftDown(int rowMove) {
-        for (int row = rowMove; row >0; row--) {
+        for (int row = rowMove; row > 0; row--) {
             for (int col = 0; col < gridColumns; col++) {
-                background[row][col] = background[row-1][col];
+                background[row][col] = background[row - 1][col];
             }
         }
     }
@@ -286,25 +367,29 @@ public class GameArea extends JPanel {
         }
     }
 
-    private void drawGrid(Graphics g, int x, int y, Color color) {
+    public void drawGrid(Graphics g, int x, int y, Color color) {
         g.setColor(color);
         g.fillRect(x, y, gridCellSize, gridCellSize);
         g.setColor(Color.black);
         g.drawRect(x, y, gridCellSize, gridCellSize);
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        drawBackground(g);
-        if (block == null) {
-            spawnBlock();
-        }
+    private void gridCell(Graphics g) {
         for (int row = 0; row < gridRows; row++) {
             for (int col = 0; col < gridColumns; col++) {
                 g.drawRect(col * gridCellSize, row * gridCellSize, gridCellSize, gridCellSize);
             }
+        }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        gridCell(g);
+
+        drawBackground(g);
+        if (block == null) {
+            spawnBlock();
         }
         drawBlock(g);
 

@@ -1,20 +1,14 @@
 package gui;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
+
 
 import util.GameThread;
 
@@ -25,8 +19,6 @@ public class GameForm extends JFrame {
     private LevelPanel levelPanel;
     private MenuPanel menuPanel;
 
-    //private int score, level;
-
     public GameForm() {
         initComponent();
         initControls();
@@ -35,6 +27,13 @@ public class GameForm extends JFrame {
         scorePanel = new ScorePanel();
         levelPanel = new LevelPanel();
         menuPanel = new MenuPanel();
+        gameArea.setNextBlockPanel(nextBlockPanel);
+
+        nextBlockPanel.setBackground(Color.BLACK);  // Atur warna latar belakang pada nextBlockPanel
+        scorePanel.setBackground(Color.BLACK);  // Atur warna latar belakang pada scorePanel
+        levelPanel.setBackground(Color.BLACK);  // Atur warna latar belakang pada levelPanel
+        menuPanel.setBackground(Color.BLACK);
+
         this.add(gameArea);
         this.add(nextBlockPanel);
         this.add(scorePanel);
@@ -60,8 +59,10 @@ public class GameForm extends JFrame {
         setSize(900, 740);
         setResizable(false);
         setLocationRelativeTo(this);
+        setBackground(Color.black);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
+        getContentPane().setBackground(Color.BLACK);
         getContentPane().setLayout(null);
     }
 

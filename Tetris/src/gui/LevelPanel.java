@@ -13,16 +13,18 @@ public class LevelPanel extends JPanel{
     private JLabel levelLabel, levelValue;
     public LevelPanel(){
         levelLabel = new JLabel("LEVEL");
+        levelLabel.setForeground(Color.white);
         levelLabel.setPreferredSize(new Dimension(100, 30));
         levelLabel.setFont(new Font("Poppins", Font.BOLD, 25));
 
         levelValue = new JLabel("1");
+        levelValue.setForeground(Color.white);
         levelValue.setPreferredSize(new Dimension(100, 60));
         levelValue.setFont(new Font("Poppins", Font.BOLD, 50));
 
         setLayout(new FlowLayout());
-        setBounds(25, 595, 200, 100);
-        setBorder(new LineBorder(Color.BLACK));
+        setBounds(25, 585, 200, 100);
+        setBorder(new LineBorder(Color.white));
         add(levelLabel);
         add(levelValue);
     }
