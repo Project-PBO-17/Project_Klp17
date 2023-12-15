@@ -10,13 +10,17 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
-public class MenuPanel extends JPanel implements ActionListener{
+public class MenuPanel extends JPanel implements ActionListener {
     private JLabel menu;
     private JButton exitButton, restartButton, pauseButton;
+    private GameForm gameForm;
+    private boolean pauseGame = false;
 
-    public MenuPanel() {
+    public MenuPanel(GameForm gameForm) {
+        this.gameForm = gameForm;
         menu = new JLabel("MENU");
         menu.setForeground(Color.white);
         menu.setPreferredSize(new Dimension(170, 30));
@@ -41,7 +45,6 @@ public class MenuPanel extends JPanel implements ActionListener{
         restartButton.setFont(new Font("Poppins", Font.PLAIN, 12));
         restartButton.addActionListener(this);
 
-
         pauseButton = new JButton("Pause Game");
         pauseButton.setPreferredSize(new Dimension(170, 30));
         pauseButton.setFocusable(false);
@@ -53,15 +56,26 @@ public class MenuPanel extends JPanel implements ActionListener{
         add(exitButton);
     }
 
+    public void setPauseGame(boolean pauseGame) {
+        this.pauseGame = pauseGame;
+    }
+
+    public boolean getPauseGame() {
+        return pauseGame;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == exitButton) {
-            
-            System.exit(0);
+            gameForm.stopGameThread();
+            gameForm.dispose();
+            new StartForm();
         } else if (e.getSource() == restartButton) {
-            
+            gameForm.restartGame();
+            SwingUtilities.updateComponentTreeUI(gameForm);
         } else if (e.getSource() == pauseButton) {
-            
+            gameForm.pauseGame();
+
         }
     }
 }

@@ -62,10 +62,11 @@ public class ScorePanel extends JPanel {
 
     public void updateLeaderboard() {
         leaderboardPanel.removeAll();
-       // UserData.setData(UserData.topUsers);
-       System.out.println("Number of elements: " + UserData.sortedUsers.size());
-        for (int i = 0; i < UserData.sortedUsers.size(); i++) {
-            userLabel = new JLabel((i + 1) + ". " + UserData.sortedUsers.get(i).getUserName() + ": " + UserData.sortedUsers.get(i).getScore());
+        //UserData.setData(UserData.topUsers);
+        UserData.getTop5Users();
+        //System.out.println("Number of elements: " + UserData.topUsers.size());
+        for (int i = 0; i < UserData.topUsers.size(); i++) {
+            userLabel = new JLabel((i + 1) + ". " + UserData.topUsers.get(i).getUserName() + ": " + UserData.topUsers.get(i).getScore());
             userLabel.setForeground(Color.white);
             userLabel.setFont(new Font("Poppins", Font.PLAIN, 12));
             userLabel.setPreferredSize(new Dimension(160, 12));

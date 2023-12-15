@@ -29,7 +29,7 @@ public class TetrisBlock {
         Random random = new Random();
         currentRotation = rotate;
         shape = shapes[currentRotation];
-        y = -getHeight();
+        y = -getHeight() - 1;
         x = random.nextInt(gridWidth - getWidth());
         color = blockClolor[setColor];
     }

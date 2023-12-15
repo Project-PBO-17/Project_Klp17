@@ -25,10 +25,10 @@ public class GameArea extends JPanel {
     private NextBlockPanel nextBlockPanel;
     private TetrisBlock lastSpawnedBlock, newBlock;
     private ArrayList<TetrisBlock> arrayTet = new ArrayList<>();
+    private boolean gamePaused = false;
 
-    public GameArea(int columns, int x, int y, int widthh, int heightt) {
-        setBounds(x, y, widthh, heightt);
-        //setBounds(245, 15, 400, 680);
+    public GameArea(int columns) {
+        setBounds(245, 15, 400, 680);
         // setBackground(Color.decode("#e6e7ed"));
         setBackground(Color.black);
         setBorder(new LineBorder(Color.white, 6));
@@ -77,8 +77,8 @@ public class GameArea extends JPanel {
         block = getBlock();
         int blockColor = random.nextInt(block.getBlockColor().length);
         int rotateNumber = random.nextInt(block.getShapes().length);
-        
-        block.Spawn(gridColumns,blockColor, rotateNumber);
+
+        block.Spawn(gridColumns, blockColor, rotateNumber);
     }
 
     public boolean isBlockOutOfBound() {
@@ -89,114 +89,91 @@ public class GameArea extends JPanel {
         return false;
     }
 
+    public void setPauseGame(boolean gamePaused) {
+        this.gamePaused = gamePaused;
+    }
+
+    public boolean isGamePaused() {
+        return gamePaused;
+    }
+
     public boolean MoveBlockDown() {
         Random random = new Random();
-        if (!checkBottom()) {
-            TetrisBlock temp = blocks[random.nextInt(blocks.length)];
-            arrayTet.remove(0);
-            setBlock(newBlock);
-            arrayTet.add(temp);
-            nextBlockPanel.setNextBlock(arrayTet.get(1));
+        if (!gamePaused) {
+            if (!checkBottom()) {
+                TetrisBlock temp = blocks[random.nextInt(blocks.length)];
+                arrayTet.remove(0);
+                setBlock(newBlock);
+                arrayTet.add(temp);
+                nextBlockPanel.setNextBlock(arrayTet.get(1));
 
-            return false;
+                return false;
+            }
+            block.moveDown();
+            repaint();
         }
-        block.moveDown();
-        repaint();
         return true;
+
     }
 
     public void MoveBlockLeft() {
-        if (block == null) {
-            return;
+        if (!gamePaused) {
+            if (block == null) {
+                return;
+            }
+            if (!checkLeft()) {
+                return;
+            }
+            block.moveLeft();
+            repaint();
         }
-        if (!checkLeft()) {
-            return;
-        }
-        block.moveLeft();
-        repaint();
+
     }
 
     public void MoveBlockRight() {
-        if (block == null) {
-            return;
-        }
-        if (!checkRight()) {
-            return;
-        }
-        block.moveRight();
-        repaint();
-    }
-
-    public void MoveBlockQuick() {
-        if (block == null) {
-            return;
-        }
-        if (checkBottom()) {
-            block.moveDown();
+        if (!gamePaused) {
+            if (block == null) {
+                return;
+            }
+            if (!checkRight()) {
+                return;
+            }
+            block.moveRight();
             repaint();
         }
     }
 
-    public void rotationBock() {
-        if (block == null) {
-            return;
+    public void MoveBlockQuick() {
+        if (!gamePaused) {
+            if (block == null) {
+                return;
+            }
+            if (checkBottom()) {
+                block.moveDown();
+                repaint();
+            }
         }
-        block.rotateBlock();
-        /*
-         * if (!checkRotation()) {
-         * return;
-         * }
-         */
-        if (block.getLeftSide() < 0) {
-            block.setX(0);
-        }
-        if (block.getRightSide() >= gridColumns) {
-            block.setX(gridColumns - block.getWidth());
-        }
-        if (block.getBottomEdge() >= gridRows) {
-            block.setY(gridRows - block.getHeight());
-        }
-
-        repaint();
     }
 
-    /*
-     * private boolean checkRotation() {
-     * int[][] shape = block.getShape();
-     * int h = block.getHeight();
-     * int w = block.getWidth();
-     * 
-     * for (int row = 0; row < h; row++) {
-     * for (int col = 0; col < w; col++) {
-     * if (shape[row][col] != 0) {
-     * int x = col + block.getX();
-     * int y = row + block.getY();
-     * 
-     * // Pengecekan khusus untuk blok panjang (Ishape)
-     * if (block instanceof IShape && col == 1) {
-     * int leftX = x - 1;
-     * int rightX = x + 1;
-     * 
-     * // Cek apakah rotasi akan menabrak sel yang sudah terisi
-     * if (leftX >= 0 && background[y][leftX] != null) {
-     * return false;
-     * }
-     * if (rightX < gridColumns && background[y][rightX] != null) {
-     * return false;
-     * }
-     * }
-     * 
-     * // Pengecekan umum untuk sel lainnya
-     * if (x < 0 || x >= gridColumns || y < 0 || y >= gridRows || background[y][x]
-     * != null) {
-     * return false;
-     * }
-     * }
-     * }
-     * }
-     * return true;
-     * }
-     */
+    public void rotationBock() {
+        if (!gamePaused) {
+            if (block == null) {
+                return;
+            }
+            block.rotateBlock();
+            if (block.getLeftSide() < 0) {
+                block.setX(0);
+            }
+            if (block.getRightSide() >= gridColumns) {
+                block.setX(gridColumns - block.getWidth());
+            }
+            if (block.getBottomEdge() >= gridRows) {
+                block.setY(gridRows - block.getHeight());
+            }
+
+            repaint();
+        }
+    }
 
     private boolean checkBottom() {
         if (block.getBottomEdge() == gridRows) {
@@ -297,7 +274,7 @@ public class GameArea extends JPanel {
             scoreGet = 300;
         } else if (line == 3) {
             scoreGet = 500;
-        }else if(line ==4){
+        } else if (line == 4) {
             scoreGet = 800;
         }
         return scoreGet;

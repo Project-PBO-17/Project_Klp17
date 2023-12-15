@@ -48,6 +48,7 @@ public class UserData {
     }
 
     public static void getTop5Users() {
+        //System.out.println("aaaa");
         String query = "SELECT score, username " +
                 "FROM user_data " +
                 "ORDER BY score DESC " +

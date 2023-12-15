@@ -5,7 +5,7 @@ import java.sql.*;
 import api.JDBC;
 
 public class Score {
-    public static void uploadScore(String username, int score) {
+    public void uploadScore(String username, int score) {
         try (Connection conn = JDBC.connect()) {
             String sql = "INSERT INTO user_data (username, score) VALUES (?, ?)";
             try (PreparedStatement preparedStatement = JDBC.conn.prepareStatement(sql)) {

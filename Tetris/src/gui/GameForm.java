@@ -7,6 +7,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
 import util.GameThread;
@@ -23,20 +24,16 @@ public class GameForm extends JFrame {
     public GameForm() {
         initComponent();
         initControls();
-        gameArea = new GameArea(10, 245, 15, 400, 680);
-
+        gameArea = new GameArea(10);
         nextBlockPanel = new NextBlockPanel();
         scorePanel = new ScorePanel();
         levelPanel = new LevelPanel();
-        menuPanel = new MenuPanel();
+        menuPanel = new MenuPanel(this);
         gameArea.setNextBlockPanel(nextBlockPanel);
 
-        // leaderBoardGameThread = new LeaderBoardGameThread(scorePanel);
-        // leaderBoardGameThread.start();
-
-        nextBlockPanel.setBackground(Color.BLACK); // Atur warna latar belakang pada nextBlockPanel
-        scorePanel.setBackground(Color.BLACK); // Atur warna latar belakang pada scorePanel
-        levelPanel.setBackground(Color.BLACK); // Atur warna latar belakang pada levelPanel
+        nextBlockPanel.setBackground(Color.BLACK);
+        scorePanel.setBackground(Color.BLACK);
+        levelPanel.setBackground(Color.BLACK);
         menuPanel.setBackground(Color.BLACK);
 
         this.add(gameArea);
@@ -47,11 +44,74 @@ public class GameForm extends JFrame {
         StartGame();
     }
 
+    public void restartGame() {
+        // Stop the existing game thread
+        if (gameThread != null && gameThread.isAlive()) {
+            gameThread.interrupt();
+        }
+
+        // Remove existing components
+        getContentPane().removeAll();
+
+        // Recreate game components
+        gameArea = new GameArea(10);
+        nextBlockPanel = new NextBlockPanel();
+        scorePanel = new ScorePanel();
+        levelPanel = new LevelPanel();
+        menuPanel = new MenuPanel(this);
+        gameArea.setNextBlockPanel(nextBlockPanel);
+
+        nextBlockPanel.setBackground(Color.BLACK);
+        scorePanel.setBackground(Color.BLACK);
+        levelPanel.setBackground(Color.BLACK);
+        menuPanel.setBackground(Color.BLACK);
+
+        // Add components to the frame
+        add(gameArea);
+        add(nextBlockPanel);
+        add(scorePanel);
+        add(levelPanel);
+        add(menuPanel);
+
+        // Start the new game thread
+        StartGame();
+
+        // Refresh the UI
+        revalidate();
+        repaint();
+    }
+
+    public void pauseGame() {
+        gameArea.setPauseGame(!gameArea.isGamePaused());
+        if (gameArea.isGamePaused()) {
+            int choice = JOptionPane.showConfirmDialog(this, "Do you want to continue the game?", "Confirmation",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (choice == JOptionPane.YES_OPTION) {
+                // User chose Yes, continue the game
+                gameArea.setPauseGame(false); // Stop the pause
+            } else {
+                gameThread.setRunning(false);
+                dispose(); 
+            }
+        }
+    }
+    public void setGameThread(GameThread gameThread) {
+        this.gameThread = gameThread;
+    }
+
+    public void stopGameThread() {
+        if (gameThread != null) {
+            gameThread.setRunning(false);
+        }
+    }
+
     public void StartGame() {
         gameThread = new GameThread(gameArea, this);
         gameThread.start();
     }
-    public ScorePanel getScorePanel(){
+
+    public ScorePanel getScorePanel() {
         return scorePanel;
     }
 
@@ -63,7 +123,8 @@ public class GameForm extends JFrame {
     public void UpdateLevel(int level) {
         levelPanel.setLevelText(String.valueOf(level));
     }
-    public int getScore(){
+
+    public int getScore() {
         return score;
     }
 
@@ -87,7 +148,6 @@ public class GameForm extends JFrame {
         input.put(KeyStroke.getKeyStroke("LEFT"), "left");
         input.put(KeyStroke.getKeyStroke("DOWN"), "down");
         input.put(KeyStroke.getKeyStroke("UP"), "up");
-        input.put(KeyStroke.getKeyStroke("SPACE"), "space");
         action.put("right", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {

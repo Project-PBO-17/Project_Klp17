@@ -1,26 +1,37 @@
+package gui;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
-public class StartForm {
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> createAndShowGUI());
+public class StartForm extends JFrame {
+    private JPanel mainPanel;
+
+    public StartForm() {
+        initComponent();
+        initControls();
+        mainPanel.setBackground(Color.BLACK);
     }
 
-    private static void createAndShowGUI() {
-        JFrame frame = new JFrame("Menu Start");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 500);
-        frame.setResizable(false); 
-        frame.getContentPane().setBackground(new Color(34, 40, 49)); 
+    private void initComponent() {
+        setTitle("Menu Start");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(600, 500);
+        setLocationRelativeTo(this);
+        setResizable(false);
+        getContentPane().setBackground(Color.BLACK);
+    }
 
-        JPanel mainPanel = new JPanel(new GridBagLayout());
-        mainPanel.setBackground(new Color(34, 40, 49)); 
+    private void initControls() {
+        mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBackground(new Color(34, 40, 49));
         GridBagConstraints gbc = new GridBagConstraints();
 
         // Logo
-        ImageIcon tetrisIcon = createScaledIcon("D:\\Juanri\\Game Tetris\\src\\image\\logo tetris.png", 250, 200);
+        ImageIcon tetrisIcon = createScaledIcon("E:\\IT\\Code\\Project_Klp17\\Tetris" +
+                "\\src\\assets\\logo tetris.png", 250, 200);
         JLabel logoLabel = new JLabel(tetrisIcon);
 
         // Place the logo above the buttons
@@ -38,31 +49,58 @@ public class StartForm {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(3, 10, 3, 10);
 
-        JButton singlePlayerButton = createStyledButton("Single Player");
-        JButton multiPlayerButton = createStyledButton("Multiplayer");
+        JButton playButton = createStyledButton("Play");
         JButton leaderboardButton = createStyledButton("Leaderboard");
         JButton quitButton = createStyledButton("Quit");
 
-        singlePlayerButton.addActionListener(e -> JOptionPane.showMessageDialog(frame, "Single Player button clicked"));
-        multiPlayerButton.addActionListener(e -> JOptionPane.showMessageDialog(frame, "Multiplayer button clicked"));
-        leaderboardButton.addActionListener(e -> JOptionPane.showMessageDialog(frame, "Leaderboard button clicked"));
-        quitButton.addActionListener(e -> System.exit(0));
+        playButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Menutup StartForm
+                SwingUtilities.invokeLater(() -> {
+                    new GameForm(); // Membuat dan menampilkan GameForm
+                });
+            }
+        });
 
-        mainPanel.add(singlePlayerButton, gbc);
-        gbc.gridy++;
-        mainPanel.add(multiPlayerButton, gbc);
+        leaderboardButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Menutup frame saat ini
+                dispose();
+
+                // Membuat dan menampilkan LeaderboardForm
+                SwingUtilities.invokeLater(() -> {
+                    try {
+                        new LeaderboardForm();
+                    } catch (SQLException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+                });
+            }
+        });
+
+        quitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
+        mainPanel.add(playButton, gbc);
         gbc.gridy++;
         mainPanel.add(leaderboardButton, gbc);
         gbc.gridy++;
         mainPanel.add(quitButton, gbc);
 
-        frame.add(mainPanel);
-        frame.setVisible(true);
+        add(mainPanel);
+        setVisible(true);
     }
 
-    private static JButton createStyledButton(String text) {
+    private JButton createStyledButton(String text) {
         JButton button = new JButton(text);
-        button.setBackground(new Color(0, 82, 148)); 
+        button.setBackground(new Color(0, 82, 148));
         button.setForeground(Color.WHITE);
         button.setFont(new Font("Arial", Font.BOLD, 16));
         button.setFocusPainted(false);
@@ -71,9 +109,13 @@ public class StartForm {
         return button;
     }
 
-    private static ImageIcon createScaledIcon(String imagePath, int width, int height) {
+    private ImageIcon createScaledIcon(String imagePath, int width, int height) {
         ImageIcon icon = new ImageIcon(imagePath);
         Image image = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(image);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new StartForm());
     }
 }
