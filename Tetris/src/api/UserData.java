@@ -5,55 +5,62 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 public class UserData {
-    public static int highScore = 0;
-    public static int tryNumber = 0;
-    public static ArrayList<User> topUsers = new ArrayList<>();
+    //public static ArrayList<User> topUsers = new ArrayList<>();
+    public static List<User> topUsers = Collections.synchronizedList(new ArrayList<>());
+    public static List<User> sortedUsers;
 
     public static class User {
-        public static String userName;
-        public static int wpm;
+        private String userName;
+        private int score;
 
-        public User(String userName, int wpm) {
+        public User(String userName, int score) {
             this.userName = userName;
-            this.wpm = wpm;
+            this.score = score;
         }
 
-        public static String getUserName() {
+        public String getUserName() {
             return userName;
         }
-
-        public int getWpm() {
-            return wpm;
+        public void setScore(int score){
+            this.score = score;
         }
+        public int getScore() {
+            return score;
+        }
+
+    }
+    public static void setData(List<User> data){
+        System.out.println("babi");
+   
+        sortedUsers = data;
     }
 
-    public void setHighScore(int highScore) {
-        this.highScore = highScore;
+    public static List<User> getUserData() {
+        sortedUsers = new ArrayList<>(topUsers);
+        sortedUsers.sort(Comparator.comparingInt(User::getScore).reversed());
+        return sortedUsers.subList(0, Math.min(6, sortedUsers.size()));
     }
-    public void setTryNumber(int tryNumber) {
-        this.tryNumber = tryNumber;
-    }
-
 
     public static void getTop5Users() {
-        System.out.println("aaa");
-        String query = "SELECT awp_user.WPM, user.Username\r\n" + //
-                "FROM awp_user\r\n" + //
-                "JOIN user ON awp_user.id_user = user.id_user\r\n" + //
-                "ORDER BY awp_user.WPM DESC\r\n" + //
+        String query = "SELECT score, username " +
+                "FROM user_data " +
+                "ORDER BY score DESC " +
                 "LIMIT 5";
 
         try (Connection conn = JDBC.connect()) {
-            try (PreparedStatement stmt = JDBC.conn.prepareStatement(query)) {
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
-                    String userName = rs.getString("Username");
-                    int wpm = rs.getInt("WPM");
+                    String username = rs.getString("username");
+                    int score = rs.getInt("score");
 
-                    User user = new User(userName, wpm);
-                    //System.out.println("nama: "+ userName);
+                    User user = new User(username, score);
                     topUsers.add(user);
                 }
             }
@@ -62,54 +69,23 @@ public class UserData {
         }
     }
 
-
-    public int getHighestWPM() {
-        String query = "SELECT MAX(WPM) AS highestWPM FROM awp_user WHERE id_user = ?";
-
-        try(Connection conn = JDBC.connect()){
-            try (PreparedStatement preparedStatement = JDBC.conn.prepareStatement(query)) {
-                preparedStatement.setInt(1, JDBC.id);
-
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    if (resultSet.next()) {
-                        int highestWPM = resultSet.getInt("highestWPM");
-                        System.out.println("Highest WPM: " + highestWPM);
-                        setHighScore(highestWPM);
-                        return highestWPM;
-                    } else {
-                        System.out.println("No data found for user with ID " + JDBC.id);
-                    }
-                }
-            } 
-        }catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
-        return -1;
+    public static void addUser(String username, int score) {
+        // Jika user tidak ada dalam topUsers, tambahkan user baru
+        User newUser = new User(username, score);
+        topUsers.add(newUser);
     }
-
-    public int getNumberOfAttempts() {
-        String query = "SELECT COUNT(*) AS attemptCount FROM awp_user WHERE id_user = ?";
-    
-        try(Connection conn = JDBC.connect()){
-            try (PreparedStatement preparedStatement = JDBC.conn.prepareStatement(query)) {
-            preparedStatement.setInt(1, JDBC.id);
-    
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    if (resultSet.next()) {
-                        int attemptCount = resultSet.getInt("attemptCount");
-                        System.out.println("Number of Attempts: " + attemptCount);
-                        setTryNumber(attemptCount);
-                        return attemptCount;
-                    } else {
-                        System.out.println("No data found for user with ID " + JDBC.id);
-                    }
-                }
-            } 
-        }catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    
-        return -1;
+    public static void setUsetScore(String username, int score){
+        User currentUser = getUserByUsername(username);
+        currentUser.setScore(score);
     }
+        
+    private static User getUserByUsername(String username) {
+        for (User user : topUsers) {
+            if (user.getUserName().equals(username)) {
+                return user;
+            }
+        }
+        return null;
+    }
+    
 }
