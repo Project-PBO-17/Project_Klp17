@@ -67,7 +67,7 @@ public class NextBlockPanel extends JPanel {
 
         // Calculate the starting position to center the block
         int startX = (gridColumns - blockWidth) / 2 * gridCellSize;
-        int startY = (gridRows - blockHeight) / 2 * gridCellSize;
+        int startY = (gridRows - blockHeight) / 2 * gridCellSize;       
 
         for (int row = 0; row < blockHeight; row++) {
             for (int col = 0; col < blockWidth; col++) {

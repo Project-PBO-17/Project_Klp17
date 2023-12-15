@@ -17,14 +17,21 @@ public class TetrisBlock {
         this.shape = shape;
         initShape();
     }
+    public Color[] getBlockColor(){
+        return blockClolor;
+    }
+    public int[][][] getShapes(){
+        return shapes;
+    }
+    
 
-    public void Spawn(int gridWidth) {
+    public void Spawn(int gridWidth, int rotate, int setColor) {
         Random random = new Random();
-        currentRotation = random.nextInt(shapes.length);
+        currentRotation = rotate;
         shape = shapes[currentRotation];
         y = -getHeight();
         x = random.nextInt(gridWidth - getWidth());
-        color = blockClolor[random.nextInt(blockClolor.length)];
+        color = blockClolor[setColor];
     }
 
     public void initShape() {

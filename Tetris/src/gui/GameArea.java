@@ -11,6 +11,7 @@ import javax.swing.border.LineBorder;
 
 import api.TetrisBlock;
 import tetrisBlocks.*;
+import util.GameThread;
 
 public class GameArea extends JPanel {
 
@@ -24,10 +25,10 @@ public class GameArea extends JPanel {
     private NextBlockPanel nextBlockPanel;
     private TetrisBlock lastSpawnedBlock, newBlock;
     private ArrayList<TetrisBlock> arrayTet = new ArrayList<>();
-    private boolean activeBlock = true;
 
-    public GameArea(int columns) {
-        setBounds(245, 15, 400, 680);
+    public GameArea(int columns, int x, int y, int widthh, int heightt) {
+        setBounds(x, y, widthh, heightt);
+        //setBounds(245, 15, 400, 680);
         // setBackground(Color.decode("#e6e7ed"));
         setBackground(Color.black);
         setBorder(new LineBorder(Color.white, 6));
@@ -65,15 +66,19 @@ public class GameArea extends JPanel {
     public void spawnBlock() {
         Random random = new Random();
         if (arrayTet.isEmpty()) {
-            arrayTet.add(blocks[random.nextInt(blocks.length)]);
-            arrayTet.add(blocks[random.nextInt(blocks.length)]);
+            TetrisBlock data1 = blocks[random.nextInt(blocks.length)];
+            TetrisBlock data2 = blocks[random.nextInt(blocks.length)];
+            arrayTet.add(data1);
+            arrayTet.add(data2);
         }
         newBlock = arrayTet.get(1);
         lastSpawnedBlock = arrayTet.get(0);
         nextBlockPanel.setNextBlock(newBlock);
-
         block = getBlock();
-        block.Spawn(gridColumns);
+        int blockColor = random.nextInt(block.getBlockColor().length);
+        int rotateNumber = random.nextInt(block.getShapes().length);
+        
+        block.Spawn(gridColumns,blockColor, rotateNumber);
     }
 
     public boolean isBlockOutOfBound() {
@@ -87,9 +92,10 @@ public class GameArea extends JPanel {
     public boolean MoveBlockDown() {
         Random random = new Random();
         if (!checkBottom()) {
+            TetrisBlock temp = blocks[random.nextInt(blocks.length)];
             arrayTet.remove(0);
             setBlock(newBlock);
-            arrayTet.add(blocks[random.nextInt(blocks.length)]);
+            arrayTet.add(temp);
             nextBlockPanel.setNextBlock(arrayTet.get(1));
 
             return false;
@@ -193,7 +199,6 @@ public class GameArea extends JPanel {
      */
 
     private boolean checkBottom() {
-        Random random = new Random();
         if (block.getBottomEdge() == gridRows) {
             return false;
         }
@@ -292,6 +297,8 @@ public class GameArea extends JPanel {
             scoreGet = 300;
         } else if (line == 3) {
             scoreGet = 500;
+        }else if(line ==4){
+            scoreGet = 800;
         }
         return scoreGet;
     }

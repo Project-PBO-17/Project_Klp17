@@ -9,7 +9,6 @@ import javax.swing.InputMap;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 
-
 import util.GameThread;
 
 public class GameForm extends JFrame {
@@ -18,20 +17,26 @@ public class GameForm extends JFrame {
     private ScorePanel scorePanel;
     private LevelPanel levelPanel;
     private MenuPanel menuPanel;
+    private GameThread gameThread;
+    private int score;
 
     public GameForm() {
         initComponent();
         initControls();
-        gameArea = new GameArea(10);
+        gameArea = new GameArea(10, 245, 15, 400, 680);
+
         nextBlockPanel = new NextBlockPanel();
         scorePanel = new ScorePanel();
         levelPanel = new LevelPanel();
         menuPanel = new MenuPanel();
         gameArea.setNextBlockPanel(nextBlockPanel);
 
-        nextBlockPanel.setBackground(Color.BLACK);  // Atur warna latar belakang pada nextBlockPanel
-        scorePanel.setBackground(Color.BLACK);  // Atur warna latar belakang pada scorePanel
-        levelPanel.setBackground(Color.BLACK);  // Atur warna latar belakang pada levelPanel
+        // leaderBoardGameThread = new LeaderBoardGameThread(scorePanel);
+        // leaderBoardGameThread.start();
+
+        nextBlockPanel.setBackground(Color.BLACK); // Atur warna latar belakang pada nextBlockPanel
+        scorePanel.setBackground(Color.BLACK); // Atur warna latar belakang pada scorePanel
+        levelPanel.setBackground(Color.BLACK); // Atur warna latar belakang pada levelPanel
         menuPanel.setBackground(Color.BLACK);
 
         this.add(gameArea);
@@ -43,15 +48,23 @@ public class GameForm extends JFrame {
     }
 
     public void StartGame() {
-        new GameThread(gameArea, this).start();
+        gameThread = new GameThread(gameArea, this);
+        gameThread.start();
+    }
+    public ScorePanel getScorePanel(){
+        return scorePanel;
     }
 
     public void UpdateScore(int score) {
+        this.score = score;
         scorePanel.setScoreText(String.valueOf(score));
     }
 
     public void UpdateLevel(int level) {
         levelPanel.setLevelText(String.valueOf(level));
+    }
+    public int getScore(){
+        return score;
     }
 
     private void initComponent() {
@@ -74,6 +87,7 @@ public class GameForm extends JFrame {
         input.put(KeyStroke.getKeyStroke("LEFT"), "left");
         input.put(KeyStroke.getKeyStroke("DOWN"), "down");
         input.put(KeyStroke.getKeyStroke("UP"), "up");
+        input.put(KeyStroke.getKeyStroke("SPACE"), "space");
         action.put("right", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -101,6 +115,7 @@ public class GameForm extends JFrame {
                 gameArea.rotationBock();
             }
         });
+
     }
 
     public static void main(String[] args) {

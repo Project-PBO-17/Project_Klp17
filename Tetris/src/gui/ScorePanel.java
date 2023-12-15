@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,9 +19,8 @@ import api.UserData;
 
 public class ScorePanel extends JPanel {
 
-    private JLabel scoreLabel, scoreValue, leaderboardLabel;
+    private JLabel scoreLabel, scoreValue, leaderboardLabel,userLabel;
     private JPanel leaderboardPanel;
-    ArrayList<String> user = new ArrayList<>(Arrays.asList("aldar: 10000", "Hifric: 9000", "Ramadhan: 5000", "aldarr: 4500", "ramadhann: 3000"));
 
     public ScorePanel() {
         scoreLabel = new JLabel("Current Score: 0");
@@ -38,17 +38,11 @@ public class ScorePanel extends JPanel {
         leaderboardLabel.setFont(new Font("Poppins", Font.BOLD, 16));
 
         leaderboardPanel = new JPanel();
-        leaderboardPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        leaderboardPanel.setPreferredSize(new Dimension(160, 100));
+        leaderboardPanel.setLayout(new FlowLayout());
+        leaderboardPanel.setPreferredSize(new Dimension(160, 120));
         leaderboardPanel.setBackground(Color.BLACK);
 
-        for (int i = 0; i < user.size(); i++) {
-            JLabel userLabel = new JLabel((i + 1) + ". " + user.get(i));
-            userLabel.setForeground(Color.white);
-            userLabel.setFont(new Font("Poppins", Font.PLAIN, 12));
-            userLabel.setPreferredSize(new Dimension(160,12));
-            leaderboardPanel.add(userLabel);
-        }
+        updateLeaderboard(); // Mengisi data leaderboard awal
 
         setLayout(new FlowLayout());
         setBounds(665, 385, 200, 300);
@@ -62,7 +56,24 @@ public class ScorePanel extends JPanel {
 
     public void setScoreText(String text) {
         scoreValue.setText(text);
-        scoreLabel.setText("Current Score: "+ text);
+        scoreLabel.setText("Current Score: " + text);
+    }
+
+
+    public void updateLeaderboard() {
+        leaderboardPanel.removeAll();
+       // UserData.setData(UserData.topUsers);
+       System.out.println("Number of elements: " + UserData.sortedUsers.size());
+        for (int i = 0; i < UserData.sortedUsers.size(); i++) {
+            userLabel = new JLabel((i + 1) + ". " + UserData.sortedUsers.get(i).getUserName() + ": " + UserData.sortedUsers.get(i).getScore());
+            userLabel.setForeground(Color.white);
+            userLabel.setFont(new Font("Poppins", Font.PLAIN, 12));
+            userLabel.setPreferredSize(new Dimension(160, 12));
+            leaderboardPanel.add(userLabel);
+        }
+
+        revalidate();
+        repaint();
     }
 
     @Override
