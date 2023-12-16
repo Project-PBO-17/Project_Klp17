@@ -63,7 +63,7 @@ public class ScorePanel extends JPanel {
     public void updateLeaderboard() {
         leaderboardPanel.removeAll();
         //UserData.setData(UserData.topUsers);
-        UserData.getTop5Users();
+        //UserData.getTop5Users();
         //System.out.println("Number of elements: " + UserData.topUsers.size());
         for (int i = 0; i < UserData.topUsers.size(); i++) {
             userLabel = new JLabel((i + 1) + ". " + UserData.topUsers.get(i).getUserName() + ": " + UserData.topUsers.get(i).getScore());

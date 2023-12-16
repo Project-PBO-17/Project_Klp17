@@ -26,6 +26,8 @@ public class GameArea extends JPanel {
     private TetrisBlock lastSpawnedBlock, newBlock;
     private ArrayList<TetrisBlock> arrayTet = new ArrayList<>();
     private boolean gamePaused = false;
+    private boolean checkLines;
+    private Thread audioThread;
 
     public GameArea(int columns) {
         setBounds(245, 15, 400, 680);
@@ -53,6 +55,10 @@ public class GameArea extends JPanel {
 
     public void setNextBlockPanel(NextBlockPanel nextBlockPanel) {
         this.nextBlockPanel = nextBlockPanel;
+    }
+
+    public boolean getCheckLines() {
+        return checkLines;
     }
 
     public TetrisBlock getBlock() {
@@ -96,10 +102,20 @@ public class GameArea extends JPanel {
     public boolean isGamePaused() {
         return gamePaused;
     }
+    private void startAudioThread(Runnable audioAction) {
+        if (audioThread != null && audioThread.isAlive()) {
+            audioThread.interrupt();
+        }
+        audioThread = new Thread(() -> {
+            audioAction.run();
+        });
+        audioThread.start();
+    }
 
     public boolean MoveBlockDown() {
         Random random = new Random();
         if (!gamePaused) {
+            //startAudioThread(TetrisMain::playMove);
             if (!checkBottom()) {
                 TetrisBlock temp = blocks[random.nextInt(blocks.length)];
                 arrayTet.remove(0);
@@ -118,6 +134,7 @@ public class GameArea extends JPanel {
 
     public void MoveBlockLeft() {
         if (!gamePaused) {
+            startAudioThread(TetrisMain::playMove);
             if (block == null) {
                 return;
             }
@@ -132,6 +149,7 @@ public class GameArea extends JPanel {
 
     public void MoveBlockRight() {
         if (!gamePaused) {
+            startAudioThread(TetrisMain::playMove);
             if (block == null) {
                 return;
             }
@@ -145,6 +163,7 @@ public class GameArea extends JPanel {
 
     public void MoveBlockQuick() {
         if (!gamePaused) {
+            startAudioThread(TetrisMain::playMove);
             if (block == null) {
                 return;
             }
@@ -170,13 +189,14 @@ public class GameArea extends JPanel {
             if (block.getBottomEdge() >= gridRows) {
                 block.setY(gridRows - block.getHeight());
             }
-
+            startAudioThread(TetrisMain::playRotate);
             repaint();
         }
     }
 
     private boolean checkBottom() {
         if (block.getBottomEdge() == gridRows) {
+            //TetrisMain.playFall();
             return false;
         }
         for (int col = 0; col < block.getWidth(); col++) {
@@ -188,6 +208,7 @@ public class GameArea extends JPanel {
                     if (y < 0)
                         break;
                     if (background[y][x] != null) {
+                        TetrisMain.playFall();
                         return false;
                     }
                     break;
@@ -242,7 +263,6 @@ public class GameArea extends JPanel {
     }
 
     public int clearLines() {
-        boolean checkLines;
         int lineCleared = 0;
         int scoreGet = 0;
         for (int row = gridRows - 1; row >= 0; row--) {
@@ -260,6 +280,9 @@ public class GameArea extends JPanel {
                 clearLine(0);
                 row++;
                 repaint();
+            }
+            if (lineCleared > 0) {
+                TetrisMain.playClear();
             }
             scoreGet = ScorePoint(lineCleared);
         }

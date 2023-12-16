@@ -7,6 +7,7 @@ import api.UserData;
 import gui.GameArea;
 import gui.GameForm;
 import gui.ScorePanel;
+import gui.TetrisMain;
 
 public class GameThread extends Thread {
     private GameArea gameArea;
@@ -42,6 +43,8 @@ public class GameThread extends Thread {
             }
             if (gameArea.isBlockOutOfBound()) {
                // leaderBoardThread.interrupt();
+               TetrisMain.stopBackground();
+               TetrisMain.playGameover();
                 String username = JOptionPane.showInputDialog(gameForm, "Game Over! Enter your name:");
 
                 // Mengatasi null jika pengguna membatalkan dialog
@@ -63,10 +66,6 @@ public class GameThread extends Thread {
             gameArea.setBlockToBackground();
             score += gameArea.clearLines();
             gameForm.UpdateScore(score);
-            //leaderBoardThread.setScore(score);
-            if (leaderBoardThread != null) {
-                leaderBoardThread.setScore(score);
-            }
             int lvl = score / scoreUpdateLevel + 1;
             if (lvl > level) {
                 scoreUpdateLevel = (scoreUpdateLevel * level) + (scoreUpdateLevel / 2);
@@ -87,7 +86,7 @@ public class GameThread extends Thread {
         return running;
     }
 
-    public int getScore() {
+    private int getScore() {
         return score;
     }
 }

@@ -13,6 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
+import util.LeaderBoardGameThread;
+
 public class MenuPanel extends JPanel implements ActionListener {
     private JLabel menu;
     private JButton exitButton, restartButton, pauseButton;
@@ -25,11 +27,11 @@ public class MenuPanel extends JPanel implements ActionListener {
         menu.setForeground(Color.white);
         menu.setPreferredSize(new Dimension(170, 30));
         menu.setFont(new Font("Poppins", Font.BOLD, 25));
-        initButton();
-        setLayout(new FlowLayout());
+        setLayout(new FlowLayout(FlowLayout.CENTER));
         setBounds(25, 10, 200, 160);
         setBorder(new LineBorder(Color.WHITE));
         add(menu);
+        initButton();
     }
 
     public void initButton() {
@@ -67,6 +69,7 @@ public class MenuPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == exitButton) {
+            TetrisMain.stopBackground();
             gameForm.stopGameThread();
             gameForm.dispose();
             new StartForm();

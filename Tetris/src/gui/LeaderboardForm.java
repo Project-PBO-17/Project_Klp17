@@ -13,6 +13,7 @@ public class LeaderboardForm extends JFrame {
     public LeaderboardForm() throws SQLException {
         super("Profile");
         showProfile();
+        TetrisMain.loopOpening();
     }
 
     public void makePanel() throws SQLException {

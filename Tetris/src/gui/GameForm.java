@@ -10,7 +10,9 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
+import api.TetrisBlock;
 import util.GameThread;
+import util.LeaderBoardGameThread;
 
 public class GameForm extends JFrame {
     private GameArea gameArea;
@@ -19,9 +21,12 @@ public class GameForm extends JFrame {
     private LevelPanel levelPanel;
     private MenuPanel menuPanel;
     private GameThread gameThread;
+    private LeaderBoardGameThread leaderThread;
     private int score;
 
     public GameForm() {
+        TetrisMain.setBackgroundVolume(0.2f);
+        TetrisMain.loopBackground();
         initComponent();
         initControls();
         gameArea = new GameArea(10);
@@ -53,35 +58,15 @@ public class GameForm extends JFrame {
         // Remove existing components
         getContentPane().removeAll();
 
-        // Recreate game components
-        gameArea = new GameArea(10);
-        nextBlockPanel = new NextBlockPanel();
-        scorePanel = new ScorePanel();
-        levelPanel = new LevelPanel();
-        menuPanel = new MenuPanel(this);
-        gameArea.setNextBlockPanel(nextBlockPanel);
-
-        nextBlockPanel.setBackground(Color.BLACK);
-        scorePanel.setBackground(Color.BLACK);
-        levelPanel.setBackground(Color.BLACK);
-        menuPanel.setBackground(Color.BLACK);
-
-        // Add components to the frame
-        add(gameArea);
-        add(nextBlockPanel);
-        add(scorePanel);
-        add(levelPanel);
-        add(menuPanel);
-
-        // Start the new game thread
-        StartGame();
-
-        // Refresh the UI
+        new GameForm();
+        
         revalidate();
         repaint();
     }
 
     public void pauseGame() {
+        TetrisMain.stopBackground();
+        TetrisMain.loopPause();
         gameArea.setPauseGame(!gameArea.isGamePaused());
         if (gameArea.isGamePaused()) {
             int choice = JOptionPane.showConfirmDialog(this, "Do you want to continue the game?", "Confirmation",
@@ -109,15 +94,14 @@ public class GameForm extends JFrame {
     public void StartGame() {
         gameThread = new GameThread(gameArea, this);
         gameThread.start();
-    }
-
-    public ScorePanel getScorePanel() {
-        return scorePanel;
+        leaderThread = new LeaderBoardGameThread(scorePanel, this, gameArea);
+        leaderThread.start();
     }
 
     public void UpdateScore(int score) {
         this.score = score;
         scorePanel.setScoreText(String.valueOf(score));
+        leaderThread.setScore(score);
     }
 
     public void UpdateLevel(int level) {
