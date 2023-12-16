@@ -9,6 +9,7 @@ import javax.swing.SwingUtilities;
 
 import api.UserData;
 import api.UserData.User;
+import gui.GameArea;
 import gui.GameForm;
 import gui.ScorePanel;
 
@@ -17,10 +18,12 @@ public class LeaderBoardGameThread extends Thread {
     private GameForm gameForm;
     private int userScore;
     private GameThread gameThread;
+    private GameArea gameArea;
 
-    public LeaderBoardGameThread(ScorePanel scorePanel, GameForm gameForm) {
+    public LeaderBoardGameThread(ScorePanel scorePanel, GameForm gameForm, GameArea gameArea) {
         this.scorePanel = scorePanel;
         this.gameForm = gameForm;
+        this.gameArea = gameArea;
     }
 
     public void setScore(int userScore) {
@@ -29,15 +32,16 @@ public class LeaderBoardGameThread extends Thread {
 
     @Override
     public void run() {
-        while (!Thread.interrupted()) {
-            // Dapatkan top 5 pengguna terbaru dari database atau sumber lainnya
-            // Tambahkan skor user ke dalam topUsers (jika lebih tinggi dari yang terendah)
-            if (UserData.getUserData().isEmpty()) {
-                // System.out.println("ababi");
-                UserData.getTop5Users();
-                UserData.addUser("Your Score: ", userScore);
-                //UserData.setData(UserData.getUserData());
-            }
+        System.out.println("aa");
+        if (UserData.getUserData().isEmpty()) {
+            System.out.println("aaa");
+            UserData.getTop5Users();
+            UserData.addUser("Your Score: ", userScore);
+            SwingUtilities.invokeLater(() -> scorePanel.updateLeaderboard());
+        }
+        while (!gameArea.getCheckLines()) {
+            System.out.println("cek");
+
             UserData.getUserData();
             int userScore = gameForm.getScore();
             UserData.setUsetScore("Your Score: ", userScore);
@@ -46,7 +50,7 @@ public class LeaderBoardGameThread extends Thread {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+
             }
         }
 

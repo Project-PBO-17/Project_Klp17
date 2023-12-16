@@ -13,6 +13,7 @@ public class StartForm extends JFrame {
         initComponent();
         initControls();
         mainPanel.setBackground(Color.BLACK);
+        TetrisMain.loopOpening();
     }
 
     private void initComponent() {
@@ -56,6 +57,7 @@ public class StartForm extends JFrame {
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                TetrisMain.stopOpening();
                 dispose(); // Menutup StartForm
                 SwingUtilities.invokeLater(() -> {
                     new GameForm(); // Membuat dan menampilkan GameForm
@@ -66,7 +68,7 @@ public class StartForm extends JFrame {
         leaderboardButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Menutup frame saat ini
+                TetrisMain.stopOpening();
                 dispose();
 
                 // Membuat dan menampilkan LeaderboardForm
@@ -113,9 +115,5 @@ public class StartForm extends JFrame {
         ImageIcon icon = new ImageIcon(imagePath);
         Image image = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(image);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new StartForm());
     }
 }
