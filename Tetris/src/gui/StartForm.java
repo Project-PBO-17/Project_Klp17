@@ -1,12 +1,15 @@
 package gui;
 
 import javax.swing.*;
+
+import util.ComponentUnit;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
-public class StartForm extends JFrame {
+public class StartForm extends JFrame implements ComponentUnit{
     private JPanel mainPanel;
 
     public StartForm() {
@@ -15,8 +18,8 @@ public class StartForm extends JFrame {
         mainPanel.setBackground(Color.BLACK);
         TetrisMain.loopOpening();
     }
-
-    private void initComponent() {
+    @Override
+    public void initComponent() {
         setTitle("Menu Start");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600, 500);
@@ -24,8 +27,8 @@ public class StartForm extends JFrame {
         setResizable(false);
         getContentPane().setBackground(Color.BLACK);
     }
-
-    private void initControls() {
+    @Override
+    public void initControls() {
         mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBackground(new Color(34, 40, 49));
         GridBagConstraints gbc = new GridBagConstraints();

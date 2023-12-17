@@ -12,7 +12,7 @@ public class LeaderboardForm extends JFrame {
 
     public LeaderboardForm() throws SQLException {
         super("Profile");
-        showProfile();
+        initComponent();
         TetrisMain.loopOpening();
     }
 
@@ -83,7 +83,7 @@ public class LeaderboardForm extends JFrame {
 
     }
 
-    public void showProfile() throws SQLException {
+    public void initComponent() throws SQLException {
         makePanel();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setBackground(Color.decode("#323437"));

@@ -13,9 +13,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
+import util.ComponentUnit;
 import util.LeaderBoardGameThread;
 
-public class MenuPanel extends JPanel implements ActionListener {
+public class MenuPanel extends JPanel implements ActionListener,ComponentUnit {
     private JLabel menu;
     private JButton exitButton, restartButton, pauseButton;
     private GameForm gameForm;
@@ -23,6 +24,11 @@ public class MenuPanel extends JPanel implements ActionListener {
 
     public MenuPanel(GameForm gameForm) {
         this.gameForm = gameForm;
+        initComponent();
+        initControls();
+    }
+    @Override
+    public void initComponent(){
         menu = new JLabel("MENU");
         menu.setForeground(Color.white);
         menu.setPreferredSize(new Dimension(170, 30));
@@ -31,10 +37,9 @@ public class MenuPanel extends JPanel implements ActionListener {
         setBounds(25, 10, 200, 160);
         setBorder(new LineBorder(Color.WHITE));
         add(menu);
-        initButton();
     }
-
-    public void initButton() {
+    @Override
+    public void initControls() {
         exitButton = new JButton("Exit Game");
         exitButton.setPreferredSize(new Dimension(170, 30));
         exitButton.setFocusable(false);
