@@ -11,10 +11,11 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
 import api.TetrisBlock;
+import util.ComponentUnit;
 import util.GameThread;
 import util.LeaderBoardGameThread;
 
-public class GameForm extends JFrame {
+public class GameForm extends JFrame implements ComponentUnit{
     private GameArea gameArea;
     private NextBlockPanel nextBlockPanel;
     private ScorePanel scorePanel;
@@ -111,8 +112,8 @@ public class GameForm extends JFrame {
     public int getScore() {
         return score;
     }
-
-    private void initComponent() {
+    @Override
+    public void initComponent() {
         setTitle("Tetris");
         setSize(900, 740);
         setResizable(false);
@@ -123,8 +124,8 @@ public class GameForm extends JFrame {
         getContentPane().setBackground(Color.BLACK);
         getContentPane().setLayout(null);
     }
-
-    private void initControls() {
+    @Override
+    public void initControls() {
         InputMap input = this.getRootPane().getInputMap();
         ActionMap action = this.getRootPane().getActionMap();
 

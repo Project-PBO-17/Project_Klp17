@@ -9,9 +9,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
-public class LevelPanel extends JPanel{
+public class LevelPanel extends JPanel {
     private JLabel levelLabel, levelValue;
-    public LevelPanel(){
+
+    public LevelPanel() {
+        initComponent();
+    }
+
+    public void initComponent() {
         levelLabel = new JLabel("LEVEL");
         levelLabel.setForeground(Color.white);
         levelLabel.setPreferredSize(new Dimension(100, 30));
@@ -28,6 +33,7 @@ public class LevelPanel extends JPanel{
         add(levelLabel);
         add(levelValue);
     }
+
     public void setLevelText(String text) {
         levelValue.setText(text);
     }
