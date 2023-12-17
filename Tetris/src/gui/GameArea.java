@@ -5,13 +5,11 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 import api.TetrisBlock;
 import tetrisBlocks.*;
-import util.GameThread;
 
 public class GameArea extends JPanel {
 
@@ -32,7 +30,7 @@ public class GameArea extends JPanel {
     public GameArea(int columns) {
         setBounds(245, 15, 400, 680);
         // setBackground(Color.decode("#e6e7ed"));
-        setBackground(Color.black);
+        setBackground(Color.decode("#042f52"));
         setBorder(new LineBorder(Color.white, 6));
 
         gridColumns = columns;
@@ -49,10 +47,7 @@ public class GameArea extends JPanel {
                 new ZShape() };
     }
 
-    public int getGridCellSize() {
-        return gridCellSize;
-    }
-
+    
     public void setNextBlockPanel(NextBlockPanel nextBlockPanel) {
         this.nextBlockPanel = nextBlockPanel;
     }
@@ -84,7 +79,7 @@ public class GameArea extends JPanel {
         int blockColor = random.nextInt(block.getBlockColor().length);
         int rotateNumber = random.nextInt(block.getShapes().length);
 
-        block.Spawn(gridColumns, blockColor, rotateNumber);
+        block.Spawn(gridColumns, rotateNumber, blockColor);
     }
 
     public boolean isBlockOutOfBound() {
@@ -115,7 +110,7 @@ public class GameArea extends JPanel {
     public boolean MoveBlockDown() {
         Random random = new Random();
         if (!gamePaused) {
-            //startAudioThread(TetrisMain::playMove);
+            startAudioThread(TetrisMain::playMove);
             if (!checkBottom()) {
                 TetrisBlock temp = blocks[random.nextInt(blocks.length)];
                 arrayTet.remove(0);
@@ -196,7 +191,7 @@ public class GameArea extends JPanel {
 
     private boolean checkBottom() {
         if (block.getBottomEdge() == gridRows) {
-            //TetrisMain.playFall();
+            startAudioThread(TetrisMain::playFall);
             return false;
         }
         for (int col = 0; col < block.getWidth(); col++) {
@@ -208,7 +203,7 @@ public class GameArea extends JPanel {
                     if (y < 0)
                         break;
                     if (background[y][x] != null) {
-                        TetrisMain.playFall();
+                        startAudioThread(TetrisMain::playFall);
                         return false;
                     }
                     break;
@@ -336,7 +331,6 @@ public class GameArea extends JPanel {
     }
 
     private void drawBlock(Graphics g) {
-        // build block
         int[][] shape = block.getShape();
         int h = block.getHeight();
         int w = block.getWidth();

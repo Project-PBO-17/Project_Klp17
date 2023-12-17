@@ -21,6 +21,7 @@ public class MenuPanel extends JPanel implements ActionListener,ComponentUnit {
     private JButton exitButton, restartButton, pauseButton;
     private GameForm gameForm;
     private boolean pauseGame = false;
+    private LeaderBoardGameThread leaderBoardGameThread;
 
     public MenuPanel(GameForm gameForm) {
         this.gameForm = gameForm;
@@ -40,27 +41,27 @@ public class MenuPanel extends JPanel implements ActionListener,ComponentUnit {
     }
     @Override
     public void initControls() {
-        exitButton = new JButton("Exit Game");
-        exitButton.setPreferredSize(new Dimension(170, 30));
-        exitButton.setFocusable(false);
-        exitButton.setFont(new Font("Poppins", Font.PLAIN, 12));
-        exitButton.addActionListener(this);
-
-        restartButton = new JButton("Restart Game");
-        restartButton.setPreferredSize(new Dimension(170, 30));
-        restartButton.setFocusable(false);
-        restartButton.setFont(new Font("Poppins", Font.PLAIN, 12));
-        restartButton.addActionListener(this);
-
-        pauseButton = new JButton("Pause Game");
-        pauseButton.setPreferredSize(new Dimension(170, 30));
-        pauseButton.setFocusable(false);
-        pauseButton.setFont(new Font("Poppins", Font.PLAIN, 12));
-        pauseButton.addActionListener(this);
+        exitButton = createStyledButton("Exit Game");
+        restartButton = createStyledButton("Restart Game");
+        pauseButton = createStyledButton("Pause Game");
 
         add(restartButton);
         add(pauseButton);
         add(exitButton);
+    }
+    private JButton createStyledButton(String text) {
+        JButton button = new JButton(text);
+        button.setPreferredSize(new Dimension(170, 30));
+        button.setFocusable(false);
+        button.setFont(new Font("Poppins", Font.PLAIN, 12));
+        
+        // Sesuaikan warna tombol
+        button.setBackground(new Color(0, 82, 148));
+        button.setForeground(Color.WHITE);
+        
+        button.addActionListener(this);
+        
+        return button;
     }
 
     public void setPauseGame(boolean pauseGame) {
@@ -76,6 +77,7 @@ public class MenuPanel extends JPanel implements ActionListener,ComponentUnit {
         if (e.getSource() == exitButton) {
             TetrisMain.stopBackground();
             gameForm.stopGameThread();
+            leaderBoardGameThread.interrupt();
             gameForm.dispose();
             new StartForm();
         } else if (e.getSource() == restartButton) {

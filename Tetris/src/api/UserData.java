@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 public class UserData {
@@ -34,11 +33,6 @@ public class UserData {
             return score;
         }
 
-    }
-    public static void setData(List<User> data){
-        System.out.println("babi");
-   
-        sortedUsers = data;
     }
 
     public static List<User> getUserData() {
@@ -71,13 +65,24 @@ public class UserData {
     }
 
     public static void addUser(String username, int score) {
-        // Jika user tidak ada dalam topUsers, tambahkan user baru
         User newUser = new User(username, score);
         topUsers.add(newUser);
     }
     public static void setUsetScore(String username, int score){
-        User currentUser = getUserByUsername(username);
-        currentUser.setScore(score);
+        if (username.equals("Your Score:")) {
+            User currentUser = getUserByUsername(username);
+            if (currentUser == null) {
+                currentUser = new User(username, score);
+                topUsers.add(currentUser);
+            } else {
+                currentUser.setScore(score);
+            }
+        } else {
+            User currentUser = getUserByUsername(username);
+            if (currentUser != null) {
+                currentUser.setScore(score);
+            }
+        }
     }
         
     private static User getUserByUsername(String username) {

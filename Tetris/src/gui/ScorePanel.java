@@ -5,15 +5,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
 
 import api.UserData;
 
@@ -23,7 +18,7 @@ public class ScorePanel extends JPanel {
     private JPanel leaderboardPanel;
 
     public ScorePanel() {
-        scoreLabel = new JLabel("Current Score: 0");
+        scoreLabel = new JLabel("Current Score: ");
         scoreLabel.setForeground(Color.white);
         scoreLabel.setPreferredSize(new Dimension(160, 30));
         scoreLabel.setFont(new Font("Poppins", Font.BOLD, 12));
@@ -56,17 +51,14 @@ public class ScorePanel extends JPanel {
 
     public void setScoreText(String text) {
         scoreValue.setText(text);
-        scoreLabel.setText("Current Score: " + text);
     }
 
 
     public void updateLeaderboard() {
         leaderboardPanel.removeAll();
-        //UserData.setData(UserData.topUsers);
-        //UserData.getTop5Users();
-        //System.out.println("Number of elements: " + UserData.topUsers.size());
-        for (int i = 0; i < UserData.topUsers.size(); i++) {
-            userLabel = new JLabel((i + 1) + ". " + UserData.topUsers.get(i).getUserName() + ": " + UserData.topUsers.get(i).getScore());
+        UserData.getUserData();
+        for (int i = 0; i < UserData.sortedUsers.size(); i++) {
+            userLabel = new JLabel((i + 1) + ". " + UserData.sortedUsers.get(i).getUserName() + ": " + UserData.sortedUsers.get(i).getScore());
             userLabel.setForeground(Color.white);
             userLabel.setFont(new Font("Poppins", Font.PLAIN, 12));
             userLabel.setPreferredSize(new Dimension(160, 12));
@@ -81,7 +73,6 @@ public class ScorePanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.CYAN);
-        // g.drawArc(30, 0, 100, 60, 0, 180);
         repaint();
     }
 }

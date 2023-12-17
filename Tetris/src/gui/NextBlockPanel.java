@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -65,7 +64,6 @@ public class NextBlockPanel extends JPanel {
         int blockWidth = block.getWidth();
         int blockHeight = block.getHeight();
 
-        // Calculate the starting position to center the block
         int startX = (gridColumns - blockWidth) / 2 * gridCellSize;
         int startY = (gridRows - blockHeight) / 2 * gridCellSize;       
 

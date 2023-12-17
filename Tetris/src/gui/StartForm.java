@@ -38,15 +38,13 @@ public class StartForm extends JFrame implements ComponentUnit{
                 "\\src\\assets\\logo tetris.png", 250, 200);
         JLabel logoLabel = new JLabel(tetrisIcon);
 
-        // Place the logo above the buttons
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 1; // Span only one column
+        gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 10, 10, 10);
         mainPanel.add(logoLabel, gbc);
 
-        // Buttons
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
@@ -61,9 +59,9 @@ public class StartForm extends JFrame implements ComponentUnit{
             @Override
             public void actionPerformed(ActionEvent e) {
                 TetrisMain.stopOpening();
-                dispose(); // Menutup StartForm
+                dispose();
                 SwingUtilities.invokeLater(() -> {
-                    new GameForm(); // Membuat dan menampilkan GameForm
+                    new GameForm();
                 });
             }
         });
@@ -71,15 +69,11 @@ public class StartForm extends JFrame implements ComponentUnit{
         leaderboardButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                TetrisMain.stopOpening();
                 dispose();
-
-                // Membuat dan menampilkan LeaderboardForm
                 SwingUtilities.invokeLater(() -> {
                     try {
                         new LeaderboardForm();
                     } catch (SQLException e1) {
-                        // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
                 });
@@ -89,6 +83,7 @@ public class StartForm extends JFrame implements ComponentUnit{
         quitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                
                 System.exit(0);
             }
         });
