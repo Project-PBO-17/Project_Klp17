@@ -63,30 +63,12 @@ public class AudioPlayer {
         }
     }
 
-    // ... (kode lainnya)
-
-    public void setClearLineVolume(float volume) {
-        setVolume(clearSound, volume);
-    }
-
-    public void setGameoverVolume(float volume) {
-        setVolume(gameoverSound, volume);
-    }
-
-    public void setOpeningVolume(float volume) {
-        setVolume(openingSound, volume);
-    }
-
     public void setBackgroundVolume(float volume) {
         setVolume(backgroundSound, volume);
     }
 
-    public void setPauseVolume(float volume) {
-        setVolume(pauseSound, volume);
-    }
-
     public void playClearLine() {
-        clearSound.setFramePosition(0); // Reset to the beginning
+        clearSound.setFramePosition(0);
         clearSound.start();
     }
 
@@ -94,41 +76,20 @@ public class AudioPlayer {
         fallSound.setFramePosition(0);
         fallSound.start();
     }
-    public void playMove(){
+
+    public void playMove() {
         moveSound.setFramePosition(0);
         moveSound.start();
     }
-    public void playRotate(){
+
+    public void playRotate() {
         rotateSound.setFramePosition(0);
         rotateSound.start();
-    }
-
-    public void loopClearLine() {
-        clearSound.loop(Clip.LOOP_CONTINUOUSLY);
-    }
-
-    public void stopClearLine() {
-        clearSound.stop();
-        clearSound.setFramePosition(0); // Reset to the beginning
     }
 
     public void playGameover() {
         gameoverSound.setFramePosition(0);
         gameoverSound.start();
-    }
-
-    public void loopGameover() {
-        gameoverSound.loop(Clip.LOOP_CONTINUOUSLY);
-    }
-
-    public void stopGameover() {
-        gameoverSound.stop();
-        gameoverSound.setFramePosition(0);
-    }
-
-    public void playOpening() {
-        openingSound.setFramePosition(0);
-        openingSound.start();
     }
 
     public void loopOpening() {
@@ -140,10 +101,6 @@ public class AudioPlayer {
         openingSound.setFramePosition(0);
     }
 
-    public void playBackground() {
-        backgroundSound.start();
-    }
-
     public void loopBackground() {
         backgroundSound.loop(Clip.LOOP_CONTINUOUSLY);
     }
@@ -151,11 +108,6 @@ public class AudioPlayer {
     public void stopBackground() {
         backgroundSound.stop();
         backgroundSound.setFramePosition(0);
-    }
-
-    public void playPause() {
-        pauseSound.setFramePosition(0);
-        pauseSound.start();
     }
 
     public void loopPause() {

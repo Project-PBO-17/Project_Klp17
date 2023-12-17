@@ -2,8 +2,6 @@ package api;
 
 import java.sql.*;
 
-import api.JDBC;
-
 public class Score {
     public void uploadScore(String username, int score) {
         try (Connection conn = JDBC.connect()) {

@@ -10,7 +10,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
-import api.TetrisBlock;
 import util.ComponentUnit;
 import util.GameThread;
 import util.LeaderBoardGameThread;
@@ -51,12 +50,9 @@ public class GameForm extends JFrame implements ComponentUnit{
     }
 
     public void restartGame() {
-        // Stop the existing game thread
         if (gameThread != null && gameThread.isAlive()) {
             gameThread.interrupt();
         }
-
-        // Remove existing components
         getContentPane().removeAll();
 
         new GameForm();
@@ -74,18 +70,17 @@ public class GameForm extends JFrame implements ComponentUnit{
                     JOptionPane.YES_NO_OPTION);
 
             if (choice == JOptionPane.YES_OPTION) {
-                // User chose Yes, continue the game
-                gameArea.setPauseGame(false); // Stop the pause
+                TetrisMain.stopPause();
+                TetrisMain.loopBackground();
+                gameArea.setPauseGame(false);
             } else {
+                TetrisMain.stopPause();
+                TetrisMain.loopOpening();
                 gameThread.setRunning(false);
                 dispose(); 
             }
         }
     }
-    public void setGameThread(GameThread gameThread) {
-        this.gameThread = gameThread;
-    }
-
     public void stopGameThread() {
         if (gameThread != null) {
             gameThread.setRunning(false);
@@ -97,6 +92,7 @@ public class GameForm extends JFrame implements ComponentUnit{
         gameThread.start();
         leaderThread = new LeaderBoardGameThread(scorePanel, this, gameArea);
         leaderThread.start();
+        gameThread.setLeaderBoardThread(leaderThread);
     }
 
     public void UpdateScore(int score) {

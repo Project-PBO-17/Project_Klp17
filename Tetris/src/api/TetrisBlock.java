@@ -11,19 +11,21 @@ public class TetrisBlock {
     private int[][][] shapes;
     private int currentRotation;
 
-    private Color[] blockClolor = {Color.RED, Color.YELLOW, Color.BLUE, Color.green};
+    private Color[] blockClolor = { Color.RED, Color.YELLOW, Color.GREEN,
+            Color.MAGENTA, Color.decode("#ed8f02"), Color.CYAN};
 
     public TetrisBlock(int[][] shape) {
         this.shape = shape;
         initShape();
     }
-    public Color[] getBlockColor(){
+
+    public Color[] getBlockColor() {
         return blockClolor;
     }
-    public int[][][] getShapes(){
+
+    public int[][][] getShapes() {
         return shapes;
     }
-    
 
     public void Spawn(int gridWidth, int rotate, int setColor) {
         Random random = new Random();
@@ -68,10 +70,12 @@ public class TetrisBlock {
     public int getX() {
         return x;
     }
-    public void setX(int newX){
+
+    public void setX(int newX) {
         x = newX;
     }
-    public void setY(int newY){
+
+    public void setY(int newY) {
         y = newY;
     }
 
@@ -110,6 +114,7 @@ public class TetrisBlock {
         }
         shape = shapes[currentRotation];
     }
+
     public int[][] getRotatedShape() {
         int[][] rotatedShape = new int[getWidth()][getHeight()];
 
@@ -121,5 +126,5 @@ public class TetrisBlock {
 
         return rotatedShape;
     }
-    
+
 }

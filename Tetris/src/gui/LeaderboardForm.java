@@ -1,19 +1,19 @@
 package gui;
 
-import api.Score;
 import api.UserData;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
-public class LeaderboardForm extends JFrame {
+public class LeaderboardForm extends JFrame implements ActionListener {
 
     public LeaderboardForm() throws SQLException {
         super("Profile");
         initComponent();
-        TetrisMain.loopOpening();
     }
 
     public void makePanel() throws SQLException {
@@ -29,21 +29,17 @@ public class LeaderboardForm extends JFrame {
         gap.setPreferredSize(new Dimension(260, 5));
         JLabel gap2 = new JLabel();
         gap2.setPreferredSize(new Dimension(260, 5));
-
+        
         add(gap2);
         add(tittle);
         add(gap);
 
         JPanel userPanel = new JPanel();
-        // userPanel.setPreferredSize(new Dimension(260, 260));
         userPanel.setBackground(Color.decode("#323437"));
-        // userPanel.set
-        // userPanel.setOpaque(false);
         userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.Y_AXIS));
-        // add(userPanel);
 
         JScrollPane scrollPane = new JScrollPane(userPanel);
-        scrollPane.setPreferredSize(new Dimension(260, 260));
+        scrollPane.setPreferredSize(new Dimension(300, 280));
         scrollPane.setBackground(Color.decode("#323437"));
         scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(10, 0));
         scrollPane.getVerticalScrollBar().setBackground(Color.decode("#323437"));
@@ -53,8 +49,7 @@ public class LeaderboardForm extends JFrame {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBorder(null);
         add(scrollPane);
-
-        for (int i = 0; i < UserData.topUsers.size(); i++) {
+        for (int i = 0; i <5; i++) {
             UserData.User currentUser = UserData.topUsers.get(i);
 
             JLabel nameLabel = new JLabel(currentUser.getUserName());
@@ -92,5 +87,11 @@ public class LeaderboardForm extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
     }
 }
